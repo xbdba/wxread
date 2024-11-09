@@ -22,7 +22,7 @@ cookie_data = {"rq": "%2Fweb%2Fbook%2Fread"}
 env_headers = os.getenv('WXREAD_HEADERS')
 env_method=os.getenv('PUSH_METHOD')
 env_cookies = os.getenv('WXREAD_COOKIES')
-env_num = os.getenv('READ_NUM', 120)
+env_num = os.getenv('READ_NUM', 400)
 
 
 headers = json.loads(json.dumps(eval(env_headers))) if env_headers else local_headers
