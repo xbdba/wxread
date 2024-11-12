@@ -1,70 +1,48 @@
-# push.py
-import os
 import requests
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# 企业微信相关配置
+AGENT_ID = '1000004'
+SECRET = 'kCLigbv6qylgAmEQXfYlouTYPa3irZvBzgn3Tm7apE0'
+CORP_ID = 'ww02a13f5386a05f87'
+ACCESS_TOKEN_URL = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken'
+SEND_MSG_URL = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={}'
 
-class PushNotification:
-    def __init__(self):
-        self.pushplus_url = "https://www.pushplus.plus/send"
-        self.telegram_base_url = "https://api.telegram.org/bot{}/sendMessage"
-        self.headers = {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-        }
-
-    def push_pushplus(self, content, token):
-        """
-        Send notification via PushPlus
-        """
-        try:
-            params = {
-                "token": token,
-                "content": content
-            }
-            response = requests.get(self.pushplus_url, headers=self.headers, params=params)
-            response.raise_for_status()
-            logger.info("PushPlus Response: %s", response.text)
-            return True
-        except Exception as e:
-            logger.error("PushPlus通知发送失败: %s", str(e))
-            return False
-
-    def push_telegram(self, content, bot_token, chat_id):
-        """
-        Telegram通知
-        """
-        try:
-            url = self.telegram_base_url.format(bot_token)
-            params = {
-                "chat_id": chat_id,
-                "text": content
-            }
-            response = requests.post(url, json=params)
-            response.raise_for_status()
-            logger.info("Telegram Response: %s", response.text)
-            return True
-        except Exception as e:
-            logger.error("Telegram通知发送失败: %s", str(e))
-            return False
-
-def push(content, method, pushplus_token=None, telegram_bot_token=None, telegram_chat_id=None):
-    """
-    统一推送接口
-    """
-    notifier = PushNotification()
+def get_access_token(corp_id, secret):
+    """获取企业微信的access token"""
+    url = f"{ACCESS_TOKEN_URL}?corpid={corp_id}&corpsecret={secret}"
+    response = requests.get(url)
+    data = response.json()
     
-    if method == "pushplus":
-        if not pushplus_token:
-            pushplus_token = os.getenv("PUSHPLUS_TOKEN", "YOUR_PUSHPLUS_TOKEN")   # 替换为你的PushPlus token
-        return notifier.push_pushplus(content, pushplus_token)
-    
-    elif method == "telegram":
-        if not all([telegram_bot_token, telegram_chat_id]):
-            telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN")  # 替换为你的Telegram bot token
-            telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID", "YOUR_CHAT_ID")  # 替换为你的Telegram chat ID
-        return notifier.push_telegram(content, telegram_bot_token, telegram_chat_id)
-    
+    if 'access_token' in data:
+        return data['access_token']
     else:
-        raise ValueError("无效的通知渠道. 请选择 'pushplus' 或者 'telegram'")
+        raise Exception("获取access token失败: {}".format(data))
+
+def push(title, content):
+    """发送企业微信消息，默认发给所有用户"""
+    try:
+        # 获取access token
+        access_token = get_access_token(CORP_ID, SECRET)
+        
+        # 消息内容
+        msg_data = {
+            "touser": "@all",  # 发送给所有用户
+            "msgtype": "text",
+            "agentid": AGENT_ID,
+            "text": {
+                "content": f"标题：{title}\n\n正文：{content}"
+            },
+            "safe": 0
+        }
+        
+        # 发送消息
+        response = requests.post(SEND_MSG_URL.format(access_token), json=msg_data)
+        result = response.json()
+        
+        if result.get('errcode') == 0:
+            print("消息发送成功")
+        else:
+            print("消息发送失败: {}".format(result))
+    
+    except Exception as e:
+        print("发生异常: {}".format(e))
