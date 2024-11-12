@@ -100,9 +100,8 @@ while True:
         index -= 1
 
     if index == number:
-        print("阅读脚本运行已完成！")
-        if env_method not in (None, ''):
-             push("阅读脚本运行已完成！",env_method)
+        push("阅读脚本运行已完成！",f"总共阅读{number * 0.5}分钟")
+             
         break
     # 确认无s字段
     data.pop('s')
