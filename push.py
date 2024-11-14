@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+import pytz
 
 # 企业微信相关配置
 AGENT_ID = '1000004'
@@ -22,8 +23,10 @@ def get_access_token(corp_id, secret):
 def push(content):
     """发送企业微信消息，默认发给所有用户"""
     try:
-        # 获取当前日期，格式化为 YYYY-MM-DD
-        current_date = datetime.now().strftime('%Y-%m-%d')
+        # 获取当前时间，并转为北京时间（CST，UTC+8）
+        timezone = pytz.timezone('Asia/Shanghai')
+        current_time = datetime.now(timezone)  # 获取当前的北京时间
+        current_date = current_time.strftime('%Y-%m-%d')  # 格式化日期为 'YYYY-MM-DD'
         
         # 获取access token
         access_token = get_access_token(CORP_ID, SECRET)
