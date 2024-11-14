@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 # 企业微信相关配置
 AGENT_ID = '1000004'
@@ -18,9 +19,12 @@ def get_access_token(corp_id, secret):
     else:
         raise Exception("获取access token失败: {}".format(data))
 
-def push(title, content):
+def push(content):
     """发送企业微信消息，默认发给所有用户"""
     try:
+        # 获取当前日期，格式化为 YYYY-MM-DD
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        
         # 获取access token
         access_token = get_access_token(CORP_ID, SECRET)
         
@@ -30,7 +34,7 @@ def push(title, content):
             "msgtype": "text",
             "agentid": AGENT_ID,
             "text": {
-                "content": f"标题：{title}\n\n正文：{content}"
+                "content": f"{current_date}\n\n{content}"
             },
             "safe": 0
         }
