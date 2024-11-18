@@ -27,7 +27,7 @@ jobs:
       env:
         WXREAD_HEADERS: ${{ secrets.WXREAD_HEADERS }}
         WXREAD_COOKIES: ${{ secrets.WXREAD_COOKIES }}
-        READ_NUM: 400  # 使用 Repository Variables
+        READ_NUM: 500  # 使用 Repository Variables
         PUSH_METHOD: ${{ secrets.PUSH_METHOD }}
         PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
