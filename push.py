@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 import pytz
+import os
 
 # 企业微信相关配置
 AGENT_ID = os.getenv('AGENT_ID')
