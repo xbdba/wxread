@@ -3,9 +3,9 @@ from datetime import datetime
 import pytz
 
 # 企业微信相关配置
-AGENT_ID = '1000004'
-SECRET = 'kCLigbv6qylgAmEQXfYlouTYPa3irZvBzgn3Tm7apE0'
-CORP_ID = 'ww02a13f5386a05f87'
+AGENT_ID = os.getenv('AGENT_ID')
+SECRET = os.getenv('SECRET')
+CORP_ID = os.getenv('CORP_ID')
 ACCESS_TOKEN_URL = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken'
 SEND_MSG_URL = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={}'
 
