@@ -7,9 +7,6 @@ import os
 AGENT_ID = os.getenv('AGENT_ID')
 SECRET = os.getenv('SECRET')
 CORP_ID = os.getenv('CORP_ID')
-print(AGENT_ID)
-print(SECRET)
-print(CORP_ID)
 ACCESS_TOKEN_URL = 'https://qyapi.weixin.qq.com/cgi-bin/gettoken'
 SEND_MSG_URL = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={}'
 
