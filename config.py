@@ -21,6 +21,27 @@ WXPUSHER_SPT = "" or os.getenv("WXPUSHER_SPT")
 # read接口的bash命令，本地部署时可对应替换headers、cookies
 curl_str = os.getenv('WXREAD_CURL_BASH')
 
+"""
+建议保留区域|默认读三体，其它书籍自行测试时间是否增加
+"""
+data = {
+    'appId': 'wb182564874663h776775553',
+    'b': 'ce032b305a9bc1ce0b0dd2a',
+    'c': '7cb321502467cbbc409e62d',
+    'ci': 70,
+    'co': 2968,
+    'sm': '伪。还有学者提出一种"宇宙迫害妄想"学说',
+    'pr': 75,
+    'rt': 30,
+    'ts': 1738739414820,
+    'rn': 59,
+    'sg': '9c4abe1628fc441bccf561ce907384a44e2eee228fd835d2634676978acd1e41',
+    'ct': 1738739414,
+    'ps': '9c4328507a5d1b12g012450',
+    'pc': '09c326907a5d1b12g0138cd',
+    's': '55451c61',
+}
+
 def convert(curl_command):
     """提取bash接口中的headers与cookies"""
     # 提取 headers
