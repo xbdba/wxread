@@ -21,61 +21,23 @@ WXPUSHER_SPT = "" or os.getenv("WXPUSHER_SPT")
 # read接口的bash命令，本地部署时可对应替换headers、cookies
 curl_str = os.getenv('WXREAD_CURL_BASH')
 
-# headers、cookies是一个省略模版，本地或者docker部署时对应替换
-cookies = {
-    'RK': 'oxEY1bTnXf',
-    'ptcz': '53e3b35a9486dd63c4d06430b05aa169402117fc407dc5cc9329b41e59f62e2b',
-    'pac_uid': '0_e63870bcecc18',
-    'iip': '0',
-    '_qimei_uuid42': '183070d3135100ee797b08bc922054dc3062834291',
-    'wr_avatar': 'https%3A%2F%2Fthirdwx.qlogo.cn%2Fmmopen%2Fvi_32%2FeEOpSbFh2Mb1bUxMW9Y3FRPfXwWvOLaNlsjWIkcKeeNg6vlVS5kOVuhNKGQ1M8zaggLqMPmpE5qIUdqEXlQgYg%2F132',
-    'wr_gender': '0',
-}
-
-headers = {
-    'accept': 'application/json, text/plain, */*',
-    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,ko;q=0.5',
-    'baggage': 'sentry-environment=production,sentry-release=dev-1730698697208,sentry-public_key=ed67ed71f7804a038e898ba54bd66e44,sentry-trace_id=1ff5a0725f8841088b42f97109c45862',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0',
-}
-
-
-"""
-建议保留区域|默认读三体，其它书籍自行测试时间是否增加
-"""
-data = {
-    'appId': 'wb182564874663h776775553',
-    'b': 'ce032b305a9bc1ce0b0dd2a',
-    'c': '7cb321502467cbbc409e62d',
-    'ci': 70,
-    'co': 2968,
-    'sm': '伪。还有学者提出一种“宇宙迫害妄想”学说',
-    'pr': 75,
-    'rt': 30,
-    'ts': 1738739414820,
-    'rn': 59,
-    'sg': '9c4abe1628fc441bccf561ce907384a44e2eee228fd835d2634676978acd1e41',
-    'ct': 1738739414,
-    'ps': '9c4328507a5d1b12g012450',
-    'pc': '09c326907a5d1b12g0138cd',
-    's': '55451c61',
-}
-
-
 def convert(curl_command):
     """提取bash接口中的headers与cookies"""
     # 提取 headers
+    headers_dict = {}
     for match in re.findall(r"-H '([^:]+): ([^']+)'", curl_command):
-        headers[match[0]] = match[1]
+        headers_dict[match[0]] = match[1]
 
     # 提取 cookies
-    cookies = {}
-    cookie_string = headers.pop('cookie', '')
-    for cookie in cookie_string.split('; '):
-        key, value = cookie.split('=', 1)
-        cookies[key] = value
+    cookies_dict = {}
+    cookie_string = re.search(r"-b '([^']+)'", curl_command)
+    if cookie_string:
+        for cookie in cookie_string.group(1).split('; '):
+            if '=' in cookie:
+                key, value = cookie.split('=', 1)
+                cookies_dict[key] = value
 
-    return headers, cookies
+    return headers_dict, cookies_dict
 
 
 headers, cookies = convert(curl_str) if curl_str else (headers, cookies)
