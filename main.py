@@ -84,7 +84,6 @@ try:
                 error_msg = "❌ 无法获取新密钥或者WXREAD_CURL_BASH配置有误，终止运行。"
                 logging.error(error_msg)
                 error_logs.append(error_msg)
-                push("\n".join(error_logs))
                 raise Exception(error_msg)
         data.pop('s')
 
