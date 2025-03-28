@@ -79,7 +79,7 @@ try:
             else:
                 ERROR_CODE = "❌ 无法获取新密钥或者WXREAD_CURL_BASH配置有误，终止运行。"
                 logging.error(ERROR_CODE)
-                push(ERROR_CODE, PUSH_METHOD)
+                push(ERROR_CODE)
                 raise Exception(ERROR_CODE)
         data.pop('s')
 
@@ -88,4 +88,4 @@ try:
 except Exception as e:
     error_msg = f"❌ 程序执行出现异常: {str(e)}"
     logging.error(error_msg)
-    push(error_msg, PUSH_METHOD)
+    push(error_msg)
