@@ -52,6 +52,7 @@ def get_wr_skey():
 
 
 try:
+    error_logs = []
     index = 1
     while index <= READ_NUM:
         data['ct'] = int(time.time())
@@ -70,17 +71,21 @@ try:
             logging.info(f"✅ 阅读成功，阅读进度：{(index - 1) * 0.5} 分钟")
 
         else:
-            logging.warning("❌ cookie 已过期，尝试刷新...")
+            error_msg = "❌ cookie 已过期，尝试刷新..."
+            logging.warning(error_msg)
+            error_logs.append(error_msg)
+            
             new_skey = get_wr_skey()
             if new_skey:
                 cookies['wr_skey'] = new_skey
                 logging.info(f"✅ 密钥刷新成功，新密钥：{new_skey}")
                 logging.info(f"🔄 重新本次阅读。")
             else:
-                ERROR_CODE = "❌ 无法获取新密钥或者WXREAD_CURL_BASH配置有误，终止运行。"
-                logging.error(ERROR_CODE)
-                push(ERROR_CODE)
-                raise Exception(ERROR_CODE)
+                error_msg = "❌ 无法获取新密钥或者WXREAD_CURL_BASH配置有误，终止运行。"
+                logging.error(error_msg)
+                error_logs.append(error_msg)
+                push("\n".join(error_logs))
+                raise Exception(error_msg)
         data.pop('s')
 
     logging.info("🎉 阅读脚本已完成！")
@@ -88,4 +93,5 @@ try:
 except Exception as e:
     error_msg = f"❌ 程序执行出现异常: {str(e)}"
     logging.error(error_msg)
-    push(error_msg)
+    error_logs.append(error_msg)
+    push("\n".join(error_logs))
